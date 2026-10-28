@@ -1,0 +1,29 @@
+name: Untis Sync
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: untis-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node sync.mjs
+        env:
+          TZ: Europe/Berlin
+          UNTIS_USER: ${{ secrets.UNTIS_USER }}
+          UNTIS_PASSWORD: ${{ secrets.UNTIS_PASSWORD }}
+          UNTIS_SERVER: ${{ secrets.UNTIS_SERVER }}
+          UNTIS_SCHOOL: ${{ secrets.UNTIS_SCHOOL }}
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
